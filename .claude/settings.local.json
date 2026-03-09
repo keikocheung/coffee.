@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.pinterest.com)",
+      "WebFetch(domain:www.pinterest.com)",
+      "Read(//private/tmp/**)",
+      "Bash(npx create-next-app@latest coffee-app --typescript --tailwind --app --no-src-dir --no-eslint --import-alias \"@/*\" --yes)",
+      "Bash(rm -rf /tmp/coffee-app)",
+      "WebFetch(domain:www.yarnspirations.com)"
+    ]
+  }
+}
