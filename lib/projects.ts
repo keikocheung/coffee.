@@ -33,7 +33,7 @@ export interface FilterOptions {
 }
 
 export function getAllProjects(filter?: FilterOptions): Project[] {
-  let projects = projectsData as Project[];
+  let projects = (projectsData as Project[]).filter((p) => p.imageFile && !p.imageFile.startsWith("data:"));
 
   if (filter?.category && filter.category !== "all") {
     projects = projects.filter((p) => p.category === filter.category);

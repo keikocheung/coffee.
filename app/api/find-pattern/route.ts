@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    return NextResponse.json({ analysis, results, isSimilar });
+    const filteredResults = results.filter((r) => r.thumbnail);
+    return NextResponse.json({ analysis, results: filteredResults, isSimilar });
   } catch (err) {
     console.error("find-pattern error:", err);
     return NextResponse.json({ error: "internal server error" }, { status: 500 });
