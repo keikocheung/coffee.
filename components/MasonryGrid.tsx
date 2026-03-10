@@ -6,9 +6,11 @@ import ProjectCard from "./ProjectCard";
 interface MasonryGridProps {
   projects: Project[];
   onCardClick: (project: Project) => void;
+  bookmarkIds?: string[];
+  onBookmarkToggle?: (id: string) => void;
 }
 
-export default function MasonryGrid({ projects, onCardClick }: MasonryGridProps) {
+export default function MasonryGrid({ projects, onCardClick, bookmarkIds, onBookmarkToggle }: MasonryGridProps) {
   if (projects.length === 0) {
     return (
       <div className="text-center py-20 text-[#673F27]/50">
@@ -34,6 +36,8 @@ export default function MasonryGrid({ projects, onCardClick }: MasonryGridProps)
             project={project}
             index={index}
             onClick={onCardClick}
+            isBookmarked={bookmarkIds?.includes(project.id)}
+            onBookmarkToggle={onBookmarkToggle}
           />
         ))}
       </div>

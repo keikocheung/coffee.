@@ -4,17 +4,17 @@ import { useState } from "react";
 import CafeAwning from "@/components/CafeAwning";
 import UploadZone from "@/components/UploadZone";
 import PatternResult from "@/components/PatternResult";
-import type { Project } from "@/lib/projects";
+import type { SerpResult } from "@/lib/serp";
 import type { ImageAnalysis } from "@/lib/claude";
 
-type Status = "idle" | "loading" | "done" | "error";
+type Status = "idle" | "loading" | "done" | "error" | "auth_error";
 
 export default function FindPatternPage() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [results, setResults] = useState<Project[]>([]);
+  const [results, setResults] = useState<SerpResult[]>([]);
   const [analysis, setAnalysis] = useState<ImageAnalysis | null>(null);
-  const [fallback, setFallback] = useState(false);
+  const [isSimilar, setIsSimilar] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
   const handleFile = (f: File) => {
@@ -22,7 +22,7 @@ export default function FindPatternPage() {
     setPreview(URL.createObjectURL(f));
     setResults([]);
     setAnalysis(null);
-    setFallback(false);
+    setIsSimilar(false);
     setStatus("idle");
   };
 
@@ -35,12 +35,17 @@ export default function FindPatternPage() {
       formData.append("image", file);
 
       const res = await fetch("/api/find-pattern", { method: "POST", body: formData });
+
+      if (res.status === 401) {
+        setStatus("auth_error");
+        return;
+      }
       if (!res.ok) throw new Error("api error");
 
       const data = await res.json();
       setAnalysis(data.analysis ?? null);
       setResults(data.results ?? []);
-      setFallback(data.fallback ?? false);
+      setIsSimilar(data.isSimilar ?? false);
       setStatus("done");
     } catch {
       setStatus("error");
@@ -88,9 +93,29 @@ export default function FindPatternPage() {
           </p>
         )}
 
+        {status === "auth_error" && (
+          <div
+            className="w-full rounded-2xl p-4 text-center"
+            style={{ backgroundColor: "#FEFEF0", border: "1px solid rgba(103,63,39,0.15)" }}
+          >
+            <p
+              className="text-[#673F27] text-sm font-semibold"
+              style={{ fontFamily: "Quicksand, sans-serif" }}
+            >
+              api key missing
+            </p>
+            <p
+              className="text-[#673F27]/60 text-xs mt-1"
+              style={{ fontFamily: "var(--font-inter), sans-serif" }}
+            >
+              add your anthropic and serp api keys to .env.local to activate this feature.
+            </p>
+          </div>
+        )}
+
         {status === "error" && (
           <p
-            className="text-[#FF4444] text-sm"
+            className="text-[#673F27]/60 text-sm"
             style={{ fontFamily: "var(--font-inter), sans-serif" }}
           >
             something went wrong — please try again.
@@ -128,12 +153,12 @@ export default function FindPatternPage() {
                 ))}
               </div>
             )}
-            {fallback && analysis.suggestedCategory && (
+            {isSimilar && results.length > 0 && (
               <p
                 className="text-[#673F27]/50 text-xs mt-1"
                 style={{ fontFamily: "var(--font-inter), sans-serif" }}
               >
-                no exact matches — showing similar {analysis.suggestedCategory} patterns
+                sorry, no exact pattern found — but here are some similar ones
               </p>
             )}
           </div>
@@ -144,7 +169,7 @@ export default function FindPatternPage() {
             className="text-[#673F27]/50 text-sm text-center"
             style={{ fontFamily: "var(--font-inter), sans-serif" }}
           >
-            we couldn't find a matching pattern — try a clearer photo!
+            sorry, no pattern found — try a clearer or more detailed photo!
           </p>
         )}
 
@@ -154,10 +179,10 @@ export default function FindPatternPage() {
               className="text-[#673F27]/50 text-xs uppercase tracking-widest"
               style={{ fontFamily: "var(--font-inter), sans-serif" }}
             >
-              {results.length} patterns found
+              {isSimilar ? "similar patterns" : `${results.length} patterns found`}
             </p>
             {results.map((r, i) => (
-              <PatternResult key={r.id} result={r} index={i} />
+              <PatternResult key={r.link} result={r} index={i} />
             ))}
           </div>
         )}

@@ -1,70 +1,122 @@
 "use client";
 
-import type { Project } from "@/lib/projects";
+import type { SerpResult } from "@/lib/serp";
 
-const BADGE_COLORS: Record<string, string> = {
-  YouTube: "#FF4444",
-  Etsy: "#F56400",
-  Gumroad: "#7C5CBF",
-  PDF: "#8A8A8A",
-  Blog: "#8A8A8A",
+const SOURCE_BADGE: Record<string, { label: string; bg: string; color: string }> = {
+  tutorial: { label: "tutorial", bg: "#69AFD7", color: "#FEFEF0" },
+  pdf:      { label: "pdf",      bg: "#673F27", color: "#FEFEF0" },
+  blog:     { label: "blog",     bg: "rgba(103,63,39,0.12)", color: "#673F27" },
 };
 
-const CARD_BG_COLORS = ["#EDE6DA", "#C8D5C0", "#D4C8D4", "#D9CEC0"];
-
 interface PatternResultProps {
-  result: Project;
+  result: SerpResult;
   index: number;
 }
 
-export default function PatternResult({ result, index }: PatternResultProps) {
-  const bgColor = CARD_BG_COLORS[index % CARD_BG_COLORS.length];
-  const badgeColor = BADGE_COLORS[result.sourceType] ?? "#8A8A8A";
+export default function PatternResult({ result }: PatternResultProps) {
+  const badge = SOURCE_BADGE[result.sourceType] ?? SOURCE_BADGE.blog;
 
   return (
     <div
-      className="rounded-2xl p-4 flex flex-col gap-3"
-      style={{ backgroundColor: bgColor, boxShadow: "0 2px 10px rgba(103,63,39,0.08)" }}
+      className="rounded-2xl p-4 flex gap-4 items-start"
+      style={{
+        backgroundColor: "#FEFEF0",
+        border: "1px solid rgba(103,63,39,0.12)",
+        boxShadow: "0 2px 10px rgba(103,63,39,0.06)",
+      }}
     >
-      <div>
+      {result.thumbnail ? (
+        <img
+          src={result.thumbnail}
+          alt={result.title}
+          className="rounded-xl w-16 h-16 object-cover flex-shrink-0"
+        />
+      ) : (
+        <div
+          className="rounded-xl w-16 h-16 flex-shrink-0 flex items-center justify-center text-xl"
+          style={{ backgroundColor: "rgba(103,63,39,0.07)", border: "1px solid rgba(103,63,39,0.12)" }}
+        >
+          🧶
+        </div>
+      )}
+
+      <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+        {/* Title */}
         <h3
-          className="text-[#673F27] text-base font-semibold"
+          className="text-[#673F27] text-base font-semibold leading-snug line-clamp-2"
           style={{ fontFamily: "Quicksand, sans-serif" }}
         >
           {result.title}
         </h3>
-        <p
-          className="text-[#673F27]/60 text-sm mt-0.5"
+
+        {/* Snippet */}
+        {result.snippet && (
+          <p
+            className="text-[#673F27]/60 text-sm line-clamp-2"
+            style={{ fontFamily: "var(--font-inter), sans-serif" }}
+          >
+            {result.snippet}
+          </p>
+        )}
+
+        {/* Badges row */}
+        <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+          {/* source type */}
+          <span
+            className="text-[11px] px-2.5 py-0.5 rounded-full font-medium"
+            style={{ backgroundColor: badge.bg, color: badge.color }}
+          >
+            {badge.label}
+          </span>
+
+          {/* free / paid */}
+          {result.isFree === true && (
+            <span
+              className="text-[11px] px-2.5 py-0.5 rounded-full font-medium"
+              style={{ backgroundColor: "rgba(105,175,215,0.18)", color: "#3a8ab5" }}
+            >
+              free
+            </span>
+          )}
+          {result.isFree === false && (
+            <span
+              className="text-[11px] px-2.5 py-0.5 rounded-full border"
+              style={{ borderColor: "rgba(103,63,39,0.2)", color: "#673F27", opacity: 0.6 }}
+            >
+              paid
+            </span>
+          )}
+
+          {/* rating */}
+          {result.rating !== undefined && (
+            <span
+              className="text-[11px] px-2 py-0.5 rounded-full"
+              style={{ color: "#673F27/70", fontFamily: "var(--font-inter), sans-serif" }}
+            >
+              ★ {result.rating.toFixed(1)}{result.reviewCount ? ` · ${result.reviewCount.toLocaleString()}` : ""}
+            </span>
+          )}
+        </div>
+
+        {/* Platform + link */}
+        <div
+          className="flex items-center gap-2 mt-0.5"
           style={{ fontFamily: "var(--font-inter), sans-serif" }}
         >
-          by {result.creator}
-        </p>
+          <span className="text-[#673F27]/40 text-xs">{result.platform}</span>
+          <span className="text-[#673F27]/20 text-xs">·</span>
+          <a
+            href={result.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium hover:underline"
+            style={{ color: "#69AFD7" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            view pattern →
+          </a>
+        </div>
       </div>
-
-      <div className="flex items-center gap-2">
-        <span
-          className="text-[11px] px-2.5 py-0.5 rounded-full text-white font-medium"
-          style={{ backgroundColor: badgeColor }}
-        >
-          {result.sourceType}
-        </span>
-        <span
-          className="text-[11px] px-2.5 py-0.5 rounded-full border border-[#673F27]/20 text-[#673F27]/70"
-        >
-          {result.isFree ? "free" : "paid"}
-        </span>
-      </div>
-
-      <a
-        href={result.sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-sm text-[#c6dbe4] hover:underline font-medium"
-        style={{ fontFamily: "var(--font-inter), sans-serif" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        view pattern →
-      </a>
     </div>
   );
 }

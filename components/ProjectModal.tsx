@@ -64,7 +64,7 @@ export default function ProjectModal({ project, onClose, onProjectClick }: Proje
             <div>
               <h2
                 className="text-[#673F27] text-xl font-semibold"
-                style={{ fontFamily: "Pacifico, cursive" }}
+                style={{ fontFamily: "Quicksand, sans-serif" }}
               >
                 {project.title}
               </h2>
@@ -102,7 +102,7 @@ export default function ProjectModal({ project, onClose, onProjectClick }: Proje
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full text-center py-2.5 rounded-2xl text-[#FEFEF0] text-sm font-semibold transition-opacity hover:opacity-80"
-            style={{ backgroundColor: "#673F27", fontFamily: "Pacifico, cursive" }}
+            style={{ backgroundColor: "#673F27", fontFamily: "Quicksand, sans-serif" }}
           >
             visit original creator →
           </a>
@@ -152,7 +152,7 @@ export default function ProjectModal({ project, onClose, onProjectClick }: Proje
                       <div className="p-2" style={{ backgroundColor: "rgba(103,63,39,0.05)" }}>
                         <p
                           className="text-[#673F27] text-xs font-semibold leading-tight truncate"
-                          style={{ fontFamily: "Pacifico, cursive" }}
+                          style={{ fontFamily: "Quicksand, sans-serif" }}
                         >
                           {s.title}
                         </p>
