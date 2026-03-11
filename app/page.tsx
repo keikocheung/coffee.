@@ -85,9 +85,9 @@ function HomeContent() {
       <CafeAwning size="full" />
 
       {/* Filter bar */}
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
-        {/* Left: search + button */}
-        <div className="flex items-center gap-2 flex-1 max-w-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* Search + button */}
+        <div className="flex items-center gap-2 w-full sm:flex-1 sm:max-w-sm">
           <div className="relative flex-1">
             <input
               ref={searchRef}
@@ -117,8 +117,8 @@ function HomeContent() {
           </button>
         </div>
 
-        {/* Right: labeled filters */}
-        <div className="flex items-end gap-3">
+        {/* Filters */}
+        <div className="flex items-end gap-3 flex-wrap">
           <div className="flex flex-col gap-0.5">
             <span className="text-[10px] text-[#673F27]/40 pl-1" style={{ fontFamily: "var(--font-inter), sans-serif" }}>filter</span>
             <select
@@ -168,7 +168,7 @@ function HomeContent() {
 
       {/* Result count (when searching) */}
       {searchQuery && (
-        <div className="max-w-7xl mx-auto px-6 -mt-2 pb-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-2 pb-2">
           <span
             className="text-xs text-[#673F27]/50"
             style={{ fontFamily: "var(--font-inter), sans-serif" }}
@@ -179,7 +179,7 @@ function HomeContent() {
       )}
 
       {/* Gallery */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
         <MasonryGrid
           projects={projects}
           onCardClick={setSelectedProject}

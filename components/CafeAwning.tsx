@@ -10,7 +10,7 @@ export default function CafeAwning({
   tagline = "more than just a pattern finder.",
 }: CafeAwningProps) {
   const stripeHeight = size === "full" ? "h-[38vh]" : "h-[18vh]";
-  const titleSize = size === "full" ? "text-8xl" : "text-4xl";
+  const titleSize = size === "full" ? "text-5xl sm:text-8xl" : "text-2xl sm:text-4xl";
   const showTagline = size === "full";
 
   return (

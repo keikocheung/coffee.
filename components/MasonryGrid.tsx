@@ -24,7 +24,8 @@ export default function MasonryGrid({ projects, onCardClick, bookmarkIds, onBook
       <style>{`
         @media (max-width: 1280px) { .masonry { column-count: 4 !important; } }
         @media (max-width: 1024px) { .masonry { column-count: 3 !important; } }
-        @media (max-width: 640px)  { .masonry { column-count: 2 !important; } }
+        @media (max-width: 640px)  { .masonry { column-count: 2 !important; column-gap: 0.5rem !important; } }
+        @media (max-width: 400px)  { .masonry { column-count: 1 !important; } }
       `}</style>
       <div
         className="masonry w-full"
